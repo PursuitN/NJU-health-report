@@ -18,7 +18,7 @@ def get_zjhs_time(method='YESTERDAY'):
         return yesterday.strftime("%Y-%m-%d %-H")
 
 
-def apply(curr_location, logger, auth: NjuUiaAuth, covidTestMethod='YESTERDAY', force=False):
+def apply(curr_location, logger, auth: NjuUiaAuth, covidTestMethod='YESTERDAY', force=True):
     """
     完成一次健康打卡
     :param `covidTestMethod`: 最近核酸时间的方案
@@ -53,20 +53,16 @@ def apply(curr_location, logger, auth: NjuUiaAuth, covidTestMethod='YESTERDAY', 
         }
         url = URL_JKDK_APPLY + '?' + urlencode(param)
 
-        logger.info('正在打卡')
-        auth.session.get(url, headers=headers)
-        return True
+        if not has_applied or force:
+            logger.info('正在打卡')
+            auth.session.get(url, headers=headers)
 
-#         if not has_applied or force:
-#             logger.info('正在打卡')
-#             auth.session.get(url, headers=headers)
+            force = False
+            time.sleep(1)
 
-#             force = False
-#             time.sleep(1)
-
-#         else:
-#             logger.info('今日已打卡！')
-#             return True
+        else:
+            logger.info('今日已打卡！')
+            return True
 
     logger.error("打卡失败，请尝试手动打卡")
     return False
