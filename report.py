@@ -53,16 +53,20 @@ def apply(curr_location, logger, auth: NjuUiaAuth, covidTestMethod='YESTERDAY', 
         }
         url = URL_JKDK_APPLY + '?' + urlencode(param)
 
-        if not has_applied or force:
-            logger.info('正在打卡')
-            auth.session.get(url, headers=headers)
+        logger.info('正在打卡')
+        auth.session.get(url, headers=headers)
+        return True
 
-            force = False
-            time.sleep(1)
+#         if not has_applied or force:
+#             logger.info('正在打卡')
+#             auth.session.get(url, headers=headers)
 
-        else:
-            logger.info('今日已打卡！')
-            return True
+#             force = False
+#             time.sleep(1)
+
+#         else:
+#             logger.info('今日已打卡！')
+#             return True
 
     logger.error("打卡失败，请尝试手动打卡")
     return False
